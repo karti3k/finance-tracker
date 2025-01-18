@@ -1,28 +1,40 @@
+"use client";
 import { currencyFormatter } from "@/app/lib/utils";
 import ExpenseCategoryItem from "@/app/components/ExpenseCategoryItem";
+import {Chart as ChartJS, ArcElement, Tooltip, Legend} from "chart.js";
+import {Doughnut} from "react-chartjs-2";
+import { useState } from "react";
+import Modal from "@/app/components/Modal";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DUMMY_DATA = [
   {
     id: 1,
     title: "Entertainment",
     color: '#000',
-    amount: 500
+    total: 500
   },
   {
     id: 2,
     title: "Shopping",
     color: '#fff',
-    amount: 2000
+    total: 2000
   },
   {
     id: 3,
     title: "Fuel",
     color: '#f4f',
-    amount: 200
+    total: 200
   }
 ];
 export default function Home() {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   return (
+    <>
+    {/* Modal */}
+    <Modal show={modalIsOpen} onClose={setModalIsOpen}><h3>Hello i am a modal</h3></Modal>
+       
     <main className="max-w-5xl px-6 mx-auto">
       <section className="py-3">
       <small className="text-gray-400 text-md">My Balance</small>
@@ -30,7 +42,7 @@ export default function Home() {
       </section>
 
       <section className="flex items-center gap-2 py-3">
-        <button className="btn btn-primary">+Expenses</button>
+        <button onClick={()=>{setModalIsOpen(true);}} className="btn btn-primary">+Expenses</button>
         <button className="btn btn-primary-outline">+Income</button>
       </section>
 
@@ -39,13 +51,36 @@ export default function Home() {
         <h3 className="text-2xl">My Expenses</h3>
         <div className="flex flex-col gap-4 mt-6">
           {/* Expense Items */}
-          {DUMMY_DATA.map(expense => {
+          {DUMMY_DATA.map((expense, index) => {
             return(
-              <ExpenseCategoryItem color={expense.color} title={expense.title} amount={expense.amount}></ExpenseCategoryItem>
+              <ExpenseCategoryItem key={expense.id || index} color={expense.color} title={expense.title} total={expense.total}></ExpenseCategoryItem>
             );
           })}
         </div>
       </section>
+
+      {/* Chart section */}
+      <section className="py-6 flex flex-col items-center">
+          <h3 className="text-2xl w-full text-left">Stats</h3>
+          <div className="w-[350px] h-[350px] mx-auto">
+            <Doughnut
+            data={{
+              labels: DUMMY_DATA.map((expense)=> expense.title),
+              datasets: [
+                {
+                  label: "Expenses",
+                  data: DUMMY_DATA.map((expense)=> expense.total),
+                  backgroundColor: DUMMY_DATA.map((expense)=>expense.color),
+                  borderColor: ["#18181b"],
+                  borderwidth: 5,
+                }
+              ]
+            }}>
+
+            </Doughnut>
+          </div>
+      </section>
     </main>
+    </>
   );
 }

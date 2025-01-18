@@ -1,5 +1,5 @@
 import { currencyFormatter } from "@/app/lib/utils";
-function ExpenseCategoryItem({color, title, amount}) {
+function ExpenseCategoryItem({color, title, total}) {
     return (
         <button>
         <div className="flex items-center justify-between px-4 py-4 bg-slate-700 rounded-3xl">
@@ -7,7 +7,7 @@ function ExpenseCategoryItem({color, title, amount}) {
                 <div className="w-[25px] h-[25px] rounded-full" style={{backgroundColor: color}}></div>
                 <h4 className="capitalize">{title}</h4>
             </div>
-            <p>{currencyFormatter(amount)}</p>
+            <p>{currencyFormatter(total)}</p>
         </div>
         </button>
     );
